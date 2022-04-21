@@ -3,4 +3,4 @@ class BulkDiscount < ApplicationRecord
   validates :threshold, presence: true
   validates :merchant_id, presence: true
   belongs_to :merchant
-end 
+end
