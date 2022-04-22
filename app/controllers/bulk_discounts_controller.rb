@@ -29,8 +29,14 @@ class BulkDiscountsController < ApplicationController
 
   def create
     @merchant = Merchant.find(params[:merchant_id])
-    @merchant.bulk_discounts.create!(percent: params[:percent], threshold: params[:threshold])
-    redirect_to merchant_bulk_discounts_path(@merchant)
+    bulk_discount = @merchant.bulk_discounts.new(percent: params[:percent], threshold: params[:threshold])
+
+    if bulk_discount.save
+      redirect_to merchant_bulk_discounts_path(@merchant)
+    else
+      redirect_to new_merchant_bulk_discount_path(@merchant)
+      flash[:alert] = "Error : #{error_message(bulk_discount.errors)}"
+    end
     # redirect_to "/merchants/#{@merchant.id}/bulk_discounts/"
   end
 
