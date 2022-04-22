@@ -44,8 +44,8 @@ class BulkDiscountsController < ApplicationController
     merchant = Merchant.find(params[:merchant_id])
     bulk_discount = BulkDiscount.find(params[:id])
     bulk_discount.destroy
-    # redirect_to merchant_bulk_discounts_path(merchant)
-    redirect_to "/merchants/#{merchant.id}/bulk_discounts"
+    redirect_to merchant_bulk_discounts_path(merchant)
+    # redirect_to "/merchant/#{merchant.id}/bulk_discounts"
   end
 
   private
