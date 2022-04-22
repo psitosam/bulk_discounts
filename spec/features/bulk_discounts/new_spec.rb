@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'bulk discount index page' do
+RSpec.describe 'merchant new bulk index page' do
   before :each do
     @merchant1 = Merchant.create!(name: 'Hair Care')
 
@@ -45,36 +45,21 @@ RSpec.describe 'bulk discount index page' do
     @bulk_discount_3 = @merchant1.bulk_discounts.create!(percent: 20, threshold: 25)
     @bulk_discount_4 = @merchant1.bulk_discounts.create!(percent: 15, threshold: 20)
 
-    visit merchant_bulk_discounts_path(@merchant1)
+    visit new_merchant_bulk_discount_path(@merchant1)
 # save_and_open_page
   end
+    it 'has a form to create a new bulk discount' do
+      expect(page).to have_content("New Discount:")
+      expect(find('form')).to have_content('Percent')
+      expect(find('form')).to have_content('Threshold')
+      expect(find('form')).to have_button('Submit')
+    end
 
-  it 'I see all my bulk discounts including their percent and threshold' do
-    within "#discount-#{@bulk_discount_1.id}" do
-      expect(page).to have_content("10 percent off of 15 or more items")
+    it 'creates the bulk discount and redirects to the merchants bulk discount index page' do
+      fill_in 'Percent', with: "30"
+      fill_in 'Threshold', with: "35"
+      click_button 'Submit'
+      expect(current_path).to eq(merchant_bulk_discounts_path(@merchant1))
+      expect(page).to have_content("30 percent off of 35 or more items")
     end
-    within "#discount-#{@bulk_discount_2.id}" do
-      expect(page).to have_content("5 percent off of 10 or more items")
-    end
-    within "#discount-#{@bulk_discount_3.id}" do
-      expect(page).to have_content("20 percent off of 25 or more items")
-    end
-    within "#discount-#{@bulk_discount_4.id}" do
-      expect(page).to have_content("15 percent off of 20 or more items")
-    end
-  end
-
-  it 'each discount is a link to its show page' do
-    within "#discount-#{@bulk_discount_1.id}" do
-      expect(page).to have_link("10")
-      click_link("10")
-      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
-    end
-  end
-
-  it 'I see a link to create a new discount, when I click this link I am taken to a new page where I see a form to add a new bulk discount' do
-    expect(page).to have_link("Create New Discount")
-    click_link("Create New Discount")
-    expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant1))
-  end
 end
