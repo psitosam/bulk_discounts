@@ -46,7 +46,7 @@ RSpec.describe 'merchant dashboard' do
     @bulk_discount_4 = @merchant1.bulk_discounts.create!(percent: 15, threshold: 20)
 
     visit merchant_bulk_discounts_path(@merchant1)
-
+# save_and_open_page
   end
 
   it 'I see all my bulk discounts including their percent and threshold' do
@@ -69,21 +69,6 @@ RSpec.describe 'merchant dashboard' do
       expect(page).to have_link("10")
       click_link("10")
       expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
-    end
-    within "#discount-#{@bulk_discount_2.id}" do
-      expect(page).to have_link("5")
-      click_link("5")
-      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_2))
-    end
-    within "#discount-#{@bulk_discount_3.id}" do
-      expect(page).to have_link("20")
-      click_link("20")
-      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_3))
-    end
-    within "#discount-#{@bulk_discount_4.id}" do
-      expect(page).to have_link("15")
-      click_link("15")
-      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_4))
     end
   end
 end
