@@ -55,11 +55,17 @@ RSpec.describe 'merchant new bulk index page' do
       expect(find('form')).to have_button('Submit')
     end
 
-    it 'creates the bulk discount and redirects to the merchants bulk discount index page' do
+    it 'a completed form creates the bulk discount and redirects to the merchants bulk discount index page' do
       fill_in 'Percent', with: "30"
       fill_in 'Threshold', with: "35"
       click_button 'Submit'
       expect(current_path).to eq(merchant_bulk_discounts_path(@merchant1))
       expect(page).to have_content("30 percent off of 35 or more items")
+    end
+
+    it 'generates an error message if a field is left blank' do
+      fill_in 'Percent', with: "30"
+      click_button 'Submit'
+      expect(page).to have_content("Error : Threshold can't be blank")
     end
 end
