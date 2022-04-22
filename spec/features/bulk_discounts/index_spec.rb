@@ -46,12 +46,44 @@ RSpec.describe 'merchant dashboard' do
     @bulk_discount_4 = @merchant1.bulk_discounts.create!(percent: 15, threshold: 20)
 
     visit merchant_bulk_discounts_path(@merchant1)
-    
+
   end
 
   it 'I see all my bulk discounts including their percent and threshold' do
     within "#discount-#{@bulk_discount_1.id}" do
       expect(page).to have_content("10 percent off of 15 or more items")
+    end
+    within "#discount-#{@bulk_discount_2.id}" do
+      expect(page).to have_content("5 percent off of 10 or more items")
+    end
+    within "#discount-#{@bulk_discount_3.id}" do
+      expect(page).to have_content("20 percent off of 25 or more items")
+    end
+    within "#discount-#{@bulk_discount_4.id}" do
+      expect(page).to have_content("15 percent off of 20 or more items")
+    end
+  end
+
+  it 'each discount is a link to its show page' do
+    within "#discount-#{@bulk_discount_1.id}" do
+      expect(page).to have_link("10")
+      click_link("10")
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
+    end
+    within "#discount-#{@bulk_discount_2.id}" do
+      expect(page).to have_link("5")
+      click_link("5")
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_2))
+    end
+    within "#discount-#{@bulk_discount_3.id}" do
+      expect(page).to have_link("20")
+      click_link("20")
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_3))
+    end
+    within "#discount-#{@bulk_discount_4.id}" do
+      expect(page).to have_link("15")
+      click_link("15")
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_4))
     end
   end
 end
