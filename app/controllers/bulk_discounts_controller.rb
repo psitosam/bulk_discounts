@@ -20,6 +20,7 @@ class BulkDiscountsController < ApplicationController
     @bulk_discount.save
     redirect_to merchant_bulk_discounts_path(@merchant, @bulk_discount)
     # redirect_to "/merchants/#{@merchant.id}/bulk_discounts/#{@bulk_discount.id}"
+    # @merchant.bulk_discounts.find
   end
 
   def edit
