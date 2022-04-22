@@ -18,7 +18,7 @@ class BulkDiscountsController < ApplicationController
     @bulk_discount = @merchant.bulk_discounts.find(params[:id])
     @bulk_discount.update(bulk_discount_params)
     @bulk_discount.save
-    redirect_to merchant_bulk_discounts_path(@merchant, @bulk_discount)
+    redirect_to merchant_bulk_discount_path(@merchant, @bulk_discount)
     # redirect_to "/merchants/#{@merchant.id}/bulk_discounts/#{@bulk_discount.id}"
     # @merchant.bulk_discounts.find
   end
@@ -51,6 +51,6 @@ class BulkDiscountsController < ApplicationController
 
   private
           def bulk_discount_params
-            params.permit(:percent, :threshold)
+            params.require(:bulk_discount).permit(:percent, :threshold)
           end
 end
