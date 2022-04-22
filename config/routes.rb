@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root 'welcome#index'
   resources :merchant, only: [:show] do
     resources :dashboard, only: [:index]
+    resources :bulk_discounts
     resources :items, except: [:destroy]
     resources :item_status, only: [:update]
     resources :invoices, only: [:index, :show, :update]
