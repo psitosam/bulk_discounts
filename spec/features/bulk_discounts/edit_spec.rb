@@ -68,4 +68,11 @@ RSpec.describe 'bulk discount index page' do
     expect(page).to have_content("Threshold: 12")
   end
 
+  it 'an incomplete form generates an error message' do
+    fill_in 'Percent', with: " "
+    click_button 'Submit'
+    expect(current_path).to eq(edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
+    expect(page).to have_content("Error : Percent can't be blank")
+  end
+
 end
