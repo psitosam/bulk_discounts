@@ -99,5 +99,53 @@ RSpec.describe 'invoices show' do
        expect(page).to_not have_content("in progress")
      end
   end
+end
 
+describe 'bulk discounts on merchant invoice show page' do
+
+  before do
+    @merchant1 = Merchant.create!(name: 'Hair Care')
+    @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+
+    @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
+    @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
+
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2)
+    @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0)
+    @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 8, status: 0)
+
+    @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2)
+    @ii_3 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_1.id, quantity: 2, unit_price: 10, status: 2)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_2.id, quantity: 2, unit_price: 8, status: 2)
+
+    @bulk_discount_1 = @merchant1.bulk_discounts.create!(percent: 10, threshold: 15)
+    @bulk_discount_2 = @merchant1.bulk_discounts.create!(percent: 5, threshold: 10)
+  end
+
+  it 'shows applied bulk discounts to invoice items that meet the threshold' do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+
+    within "#bulk_discounts" do
+      expect(page).to have_content("Discounts applied: $4.00")
+      expect(page).to have_content("Total Sale: $86.00")
+    end
+  end
+
+  it 'does not show any discounts to invoice items under the threshold' do
+    visit merchant_invoice_path(@merchant1, @invoice_2)
+
+    within "#bulk_discounts" do
+      expect(page).to have_content("Discounts applied: $0.00")
+      expect(page).to have_content("Total Sale: $36.00")
+    end
+  end
+
+  it 'next to each invoice item is a link to the show page for the bulk discount that was applied, if any' do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+    within "#the-status-#{@ii_2.id}" do
+      expect(page).to have_link("Conditioner")
+      click_link("Conditioner")
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_2))
+    end
+  end
 end
