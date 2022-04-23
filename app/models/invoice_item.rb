@@ -36,5 +36,5 @@ class InvoiceItem < ApplicationRecord
                   .order(percent: :desc)
                   .first
   end
-  #above method also gets the best possible discount, if more than one exist
+  #above method also gets the best possible discount, if more than one exist. This assumes a scenario where the merchant is offering the best possible discount as a service, and that it is not up to the customer to select their discount at checkout.
 end
