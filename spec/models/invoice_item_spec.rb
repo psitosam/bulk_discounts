@@ -49,7 +49,7 @@ RSpec.describe InvoiceItem, type: :model do
       @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
 
       @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2)
-      @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0)
+      @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 0)
       @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 8, status: 0)
 
       @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2)
@@ -62,6 +62,8 @@ RSpec.describe InvoiceItem, type: :model do
 
     it 'matches the invoice item to the bulk discount applied to that item so that we can pass the bulk discount id to the url path helper in the view' do
       expect(@ii_2.match_invoice_item_to_discount.id).to eq(@bulk_discount_2.id)
+      expect(@ii_1.match_invoice_item_to_discount.id).to eq(@bulk_discount_1.id)
+
     end
   end
 end
