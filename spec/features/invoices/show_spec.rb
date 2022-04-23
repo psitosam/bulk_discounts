@@ -124,6 +124,7 @@ describe 'bulk discounts on merchant invoice show page' do
 
   it 'shows applied bulk discounts to invoice items that meet the threshold' do
     visit merchant_invoice_path(@merchant1, @invoice_1)
+
     within "#bulk_discounts" do
       expect(page).to have_content("Discounts applied: $4.00")
       expect(page).to have_content("Total Sale: $86.00")
@@ -132,6 +133,7 @@ describe 'bulk discounts on merchant invoice show page' do
 
   it 'does not show any discounts to invoice items under the threshold' do
     visit merchant_invoice_path(@merchant1, @invoice_2)
+    
     within "#bulk_discounts" do
       expect(page).to have_content("Discounts applied: $0.00")
       expect(page).to have_content("Total Sale: $36.00")
