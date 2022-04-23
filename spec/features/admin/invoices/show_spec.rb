@@ -70,3 +70,41 @@ describe 'Admin Invoices Index Page' do
     end
   end
 end
+
+describe 'admin merchant invoice show page with bulk discounts' do
+  before do
+    @merchant1 = Merchant.create!(name: 'Hair Care')
+    @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+
+    @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
+    @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
+
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2)
+    @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0)
+    @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 8, status: 0)
+
+    @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2)
+    @ii_3 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_2.id, quantity: 2, unit_price: 8, status: 2)
+
+    @bulk_discount_1 = @merchant1.bulk_discounts.create!(percent: 10, threshold: 15)
+    @bulk_discount_2 = @merchant1.bulk_discounts.create!(percent: 5, threshold: 10)
+
+  end
+
+  it 'shows total revenue for this invoice not including discounts, total discount amount applied as discounted revenue and total sale' do
+    visit admin_invoice_path(@invoice_1)
+
+    within("#bulk_discounts") do
+      expect(page).to have_content("Discounted Revenue: $4.00")
+      expect(page).to have_content("Total Sale: $86.00")
+    end
+    visit admin_invoice_path(@invoice_2)
+
+    within("#bulk_discounts") do
+      expect(page).to have_content("Discounted Revenue: $15.00")
+      expect(page).to have_content("Total Sale: $151.00")
+    end
+  end
+
+end
