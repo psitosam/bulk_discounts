@@ -87,4 +87,18 @@ RSpec.describe 'bulk discount index page' do
     end
       expect(page).to_not have_content("10 percent off of 15 or more items")
   end
+
+  it 'I see an upcoming holidays section listing the name and date of the next 3 upcoming US holidays' do
+    within "#upcoming_holidays" do
+      expect(page).to have_content("Upcoming Holidays:")
+      expect(page).to have_content("Memorial Day")
+      expect(page).to have_content("2022-05-30")
+
+      expect(page).to have_content("Juneteenth")
+      expect(page).to have_content("2022-06-20")
+
+      expect(page).to have_content("Independence Day")
+      expect(page).to have_content("2022-07-04")
+    end
+  end 
 end
